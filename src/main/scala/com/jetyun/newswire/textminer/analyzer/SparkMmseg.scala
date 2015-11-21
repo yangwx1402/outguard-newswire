@@ -13,9 +13,8 @@ import java.io.StringReader
  * @author 杨勇
  * 分词器
  */
-class SparkMmseg {
-  private val dic: Dictionary = Dictionary.getInstance("data")
-  private val seg: Seg = new ComplexSeg(dic)
+class SparkMmseg extends Serializable{
+  private val seg: Seg = new ComplexSeg()
 
   private def segWords(input: Reader, wordSpilt: String): String = {
     val sb = new StringBuilder();
@@ -37,9 +36,7 @@ class SparkMmseg {
   private def segWords(txt: String, wordSpilt: String): String = {
     return segWords(new StringReader(txt), wordSpilt);
   }
-}
-object SparkMmseg {
-  private val segTool: SparkMmseg = new SparkMmseg
-  def seg(txt: String, wordSpilt: String): String = segTool.segWords(txt, wordSpilt)
-  def seg(input: Reader, wordSpilt: String): String = segTool.segWords(input, wordSpilt)
+  
+  def seg(txt: String, wordSpilt: String): String = segWords(txt, wordSpilt)
+  def seg(input: Reader, wordSpilt: String): String = segWords(input, wordSpilt)
 }
