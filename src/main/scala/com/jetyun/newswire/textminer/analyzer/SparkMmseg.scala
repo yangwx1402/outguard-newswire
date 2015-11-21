@@ -16,6 +16,9 @@ import java.io.StringReader
 class SparkMmseg extends Serializable{
   private val seg: Seg = new ComplexSeg()
 
+  /**
+   * 可以通过这里改善分词,比如过滤掉一些停用词
+   */
   private def segWords(input: Reader, wordSpilt: String): String = {
     val sb = new StringBuilder();
     val mmSeg = new MMSeg(input, seg);

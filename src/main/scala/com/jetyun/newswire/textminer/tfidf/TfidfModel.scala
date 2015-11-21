@@ -10,10 +10,13 @@ import org.apache.commons.lang.StringUtils
  * tfidf模型
  */
 class TfidfModel(localFile: Boolean = false) extends Serializable {
-  val idf = new HashMap[String, Double]
+  private val idf = new HashMap[String, Double]
+
+  private val index = new HashMap[Int, String]
 
   def addIdf(word: String, idfValue: Double) {
     idf.put(word, idfValue)
+    index.put(word.hashCode(), word)
   }
 
   def addIdfs(idfs: Array[(String, Double)]) {
@@ -24,15 +27,18 @@ class TfidfModel(localFile: Boolean = false) extends Serializable {
 
   def predict(word: WordTf): Double = if (idf.contains(word.text)) word.tf * idf.get(word.text).get else 1.0 / 50 * word.tf
 
+  def index(key:Int):String = index.get(key).get
+  
   def saveModel(modelPath: String) {
     val buffer = new StringBuilder
     for (entry <- idf) {
       buffer.append(entry._1 + ":" + entry._2 + "\n")
     }
-    if (localFile)
+    if (localFile) {
       LocalFileTools.writeFile(modelPath, buffer.toString())
-    else
+    } else {
       HdfsFileTools.writeFile(modelPath, buffer.toString())
+    }
   }
 
   def loadModel(modelPath: String) {
@@ -43,7 +49,7 @@ class TfidfModel(localFile: Boolean = false) extends Serializable {
       dataArray = HdfsFileTools.readLines(modelPath)
     val idfs = dataArray.filter { x => !StringUtils.isBlank(x) }.map { line =>
       val temp = line.split(":")
-      (temp(0),temp(1).toDouble)
+      (temp(0), temp(1).toDouble)
     }
     addIdfs(idfs)
   }

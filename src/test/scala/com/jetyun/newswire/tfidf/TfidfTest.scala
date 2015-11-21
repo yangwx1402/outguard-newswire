@@ -15,20 +15,25 @@ import java.io.File
 object TfidfTest extends TestBase {
 
   def main(args: Array[String]): Unit = {
-    try{
-    val dataPath = "E:\\data\\spark\\tfidf\\test.data"
-    val trainData = sc.textFile(dataPath, 1).filter { line => !StringUtils.isBlank(line) }
-    val tfidfModel = TfidfModelTrainer.train(trainData)
-    val exactor = new TfidfFeatureExactor(tfidfModel)
-    var index = 0
-    val srcData = trainData.map { x => 
-      index = index+1
-      Article(index, "", "", x) }
-    val features = exactor.exact(srcData)
-    features.foreach { println _ }
-    }catch{
-      case e:Exception => e.printStackTrace()
-      FileUtils.writeStringToFile(new File("E:\\error.log"), e.getCause.toString(), false)
+    try {
+      val dataPath = "E:\\data\\spark\\tfidf\\test.data"
+      val trainData = sc.textFile(dataPath, 1).filter { line => !StringUtils.isBlank(line) }
+      //trainData.foreach { println _ }
+      val tfidfModel = TfidfModelTrainer.train(trainData)
+      val exactor = new TfidfFeatureExactor(tfidfModel)
+      var index = 0
+      val srcData = trainData.map { x =>
+        index = index + 1
+        Article(index, "", "", x)
+      }
+      val features = exactor.exact(srcData).collect()
+      for(f<-features){
+        println(exactor.printFeature(f))
+      }
+    } catch {
+      case e: Exception =>
+        e.printStackTrace()
+        FileUtils.writeStringToFile(new File("E:\\error.log"), e.getCause.toString(), false)
     }
   }
 }
