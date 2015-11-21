@@ -15,7 +15,6 @@ libraryDependencies ++=
      val spark_version = "1.5.1"
      val httpclient_version = "4.4.1"
      val xstream_version = "1.4.8"
-     val mmseg_version = "1.10.0"
      val mmseg_solr_version = "2.3.0"
      val solr_version = "5.0.0"
      Seq(
@@ -29,7 +28,6 @@ libraryDependencies ++=
          "org.apache.httpcomponents" % "httpclient" % httpclient_version,
          "org.apache.httpcomponents" % "httpcore" % httpclient_version,
          "com.thoughtworks.xstream" % "xstream" % xstream_version,
-         "com.chenlb.mmseg4j" % "mmseg4j-core" % mmseg_version,
          "com.chenlb.mmseg4j" % "mmseg4j-solr" % mmseg_solr_version,
          //"org.apache.solr" % "solr-core" % solr_version,
          "org.apache.lucene" % "lucene-core" % solr_version
