@@ -1,7 +1,7 @@
 package com.jetyun.newswire.clustering
 
 /**
- * @author Administrator
+ * @author 杨勇
  */
 object LDADriver {
   

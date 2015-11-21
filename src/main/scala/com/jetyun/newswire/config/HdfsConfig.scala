@@ -4,7 +4,7 @@ import java.util.ResourceBundle
 import java.util.Locale
 
 /**
- * @author Administrator
+ * @author 杨勇
  */
 object HdfsConfig {
 

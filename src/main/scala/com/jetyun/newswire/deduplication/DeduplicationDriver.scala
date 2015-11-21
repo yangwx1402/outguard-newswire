@@ -1,7 +1,7 @@
 package com.jetyun.newswire.deduplication
 
 /**
- * @author Administrator
+ * @author 杨勇
  */
 object DeduplicationDriver {
   

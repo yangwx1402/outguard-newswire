@@ -1,7 +1,7 @@
 package com.jetyun.newswire.recommendation
 
 /**
- * @author Administrator
+ * @author 杨勇
  */
 object CFDriver {
   
