@@ -16,7 +16,7 @@ object TfidfModelTrainer {
     val docNum = data.count()
     //单词出现文档个数
     val wordDocNum = data.map { line =>
-      val words = sparkMmseg.seg(line, ",").split(",").map { x => (x, 1) }.toMap
+      val words = sparkMmseg.seg(line, ",").split(",").filter { x => x.matches("[\\u4e00-\\u9fa5]*") }.map { x => (x, 1) }.toMap
       words.toArray
     }.flatMap(x => x).reduceByKey(_ + _)
     //计算idf
