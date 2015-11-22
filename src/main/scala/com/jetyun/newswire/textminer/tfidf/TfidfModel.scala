@@ -9,7 +9,7 @@ import org.apache.commons.lang.StringUtils
  * @author 杨勇
  * tfidf模型
  */
-class TfidfModel(localFile: Boolean = false) extends Serializable {
+class TfidfModel() extends Serializable {
   private val idf = new HashMap[String, Double]
 
   private val index = new HashMap[Int, String]
@@ -27,9 +27,9 @@ class TfidfModel(localFile: Boolean = false) extends Serializable {
 
   def predict(word: WordTf): Double = if (idf.contains(word.text)) word.tf * idf.get(word.text).get else 1.0 / 50 * word.tf
 
-  def index(key:Int):String = index.get(key).get
+  def index(key:Int):String = if(index.contains(key)) index.get(key).get else "none"
   
-  def saveModel(modelPath: String) {
+  def saveModel(modelPath: String,localFile: Boolean = false) {
     val buffer = new StringBuilder
     for (entry <- idf) {
       buffer.append(entry._1 + ":" + entry._2 + "\n")
@@ -41,7 +41,7 @@ class TfidfModel(localFile: Boolean = false) extends Serializable {
     }
   }
 
-  def loadModel(modelPath: String) {
+  def loadModel(modelPath: String,localFile: Boolean = false) {
     var dataArray = Array[String]()
     if (localFile)
       dataArray = LocalFileTools.readLines(modelPath)

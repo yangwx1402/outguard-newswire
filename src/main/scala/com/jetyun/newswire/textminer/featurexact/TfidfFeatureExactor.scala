@@ -19,7 +19,7 @@ class TfidfFeatureExactor(model: TfidfModel) extends Serializable {
     val sparkMmseg = new SparkMmseg
     //这里需要考虑标题,关键字,内容的权重,参考下孙健的实现
     val features = articles.map { article =>
-      val words = sparkMmseg.seg(article.content, ",").split(",")
+      val words = sparkMmseg.seg(article.content, ",").split(",").filter { x => x.matches("[\\u4e00-\\u9fa5]*")&&x.length()>1 }
       val map = new HashMap[String, Double]
       words.foreach(w => {
         if (map.contains(w)) {
@@ -29,9 +29,11 @@ class TfidfFeatureExactor(model: TfidfModel) extends Serializable {
         }
       })
       val temp = map.toArray
-      val map2 = temp.sortBy(-_._2).toMap.map(w => (w._1.hashCode(), model.predict(WordTf(w._1, w._2))))
+      val map2 = temp.map(w => (w._1.hashCode(), model.predict(WordTf(w._1, w._2)))).sortBy(-_._2)
+      val indexs = map2.map(_._1)
+      val values = map2.map(_._2)
       // map.foreach(x=>println("article_id="+article.id+":"+x) )
-      val vector = Vectors.sparse(map.size, map2.keySet.toArray, map2.values.toArray)
+      val vector = Vectors.sparse(map.size, indexs, values)
       LabeledPoint(article.id, vector)
     }
     features
@@ -45,7 +47,7 @@ class TfidfFeatureExactor(model: TfidfModel) extends Serializable {
     val buffer = new StringBuilder
     buffer.append("label=" + label + " feature=[")
     for (i <- 0 until size) {
-      buffer.append("" + model.index(indexs(i)) + ":" + values(0) + ",")
+      buffer.append("" + model.index(indexs(i)) + ":" + values(i) + ",")
     }
     buffer.append("]")
     buffer.toString()
